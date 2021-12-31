@@ -1,4 +1,8 @@
 #include "header.h"
+path q;
+vector<directory_entry> dir;
+stack<path> backstk;
+stack<path> frwdstk;
 
 string perms_linux(perms p){
 	ostringstream ss;
@@ -53,7 +57,7 @@ void print_dirent(directory_entry const& d,bool color=false){
 
 		struct stat fileStat;
         stat(d.path().filename().c_str(), &fileStat);
-        //Unsigned It type User ID to user name and Group ID to group name
+        //Unsigned Int type User ID to user name and Group ID to group name
         struct passwd *pw = getpwuid(fileStat.st_uid);
 		out << pw->pw_name << string(72 - out.str().length(), ' ');
 		struct group *gp = getgrgid(fileStat.st_gid);
@@ -62,15 +66,29 @@ void print_dirent(directory_entry const& d,bool color=false){
 		out << ctime(&fileStat.st_mtime);
 
 		string entry=out.str();
-		if(color)entry="\033[7m"+entry+"\033[0m";
+		if(color) entry="\033[7m"+entry+"\033[0m";
 		cout << entry;
 }
 
-void scrollDir(vector<directory_entry> &dir, int first,int last,int curr){
+void updateDirEnt(path p, int& first, int& last, int& curr){
+    q = p;
+    current_path(q);
+    dir.clear();
+    dir = {directory_entry("."),directory_entry("..")};
+    directory_iterator d_itr(q);
+    for (auto e : d_itr){
+        dir.push_back(e);
+    }
+    first=0,last=dir.size();
+    if(last>25)last=25;
+    curr=1;
+}
 
+void scrollDir(vector<directory_entry> &dir, int first,int last,int curr){
+    path p;
     struct termios initialrsettings, newrsettings;
     tcgetattr(fileno(stdin), &initialrsettings);
-    //switch to canonical mode and echo mode
+    /*switch to canonical mode and echo mode*/
     newrsettings = initialrsettings;
     newrsettings.c_lflag &= ~ICANON;
 	newrsettings.c_lflag &= ~ECHO;
@@ -120,19 +138,59 @@ void scrollDir(vector<directory_entry> &dir, int first,int last,int curr){
                     }
                 }
             }
-            //if (e==67) { cout << "RIGHT";}
-            //if (e==68) { cout << "LEFT";}
+            if(c=='C'){
+                /*right arrow*/
+                if(!frwdstk.empty()){
+                    backstk.push(q);
+                    path p = frwdstk.top();
+                    frwdstk.pop();
+                    updateDirEnt(p,first,last,curr);
+                }
+            }
+            if(c=='D'){
+                /*left arrow*/
+                if(!backstk.empty()){
+                    frwdstk.push(q);
+                    p = backstk.top();
+                    backstk.pop();
+                    updateDirEnt(p,first,last,curr);
+                }
+            }
         }
-        else if(key == 'c'){
-        }
-        else if(key == 'd'){
-        }
-        else if (key==10){
+        else if(key==10){
+            /* enter into a directory */
             if(dir[curr].is_directory()){
                 if(curr==0)continue;
-                if(curr==1)break;
-                printDir(dir[curr].path());
+                p = dir[curr].path();
+                backstk.push(current_path());
+                while(!frwdstk.empty()) frwdstk.pop();
+                updateDirEnt(p,first,last,curr);
             }
+            else if(dir[curr].is_regular_file()){
+                /*call the nano editor to open the file*/
+                string fname = dir[curr].path().filename().string();
+                bool check_media = ((dir[curr].path().extension() == ".mp4" )||
+                                        (dir[curr].path().extension() == ".mp3" ) ||
+                                            (dir[curr].path().extension() == ".pdf" )||
+                                                (dir[curr].path().extension() == ".jpg" ));
+                if(check_media == true) open_media_pdf(fname);
+                else open_txt(fname);
+            }
+        }
+        else if(key==127){
+            /*backspace*/
+            /*https://stackoverflow.com/questions/4363309/how-to-check-for-the-backspace-character-in-c*/
+            backstk.push(q);
+            p = q.parent_path();
+            while(!frwdstk.empty()) frwdstk.pop();
+            updateDirEnt(p,first,last,curr);
+        }
+        else if(key==104){
+            /*h - home*/
+            backstk.push(q);
+            p = absolute("/home");
+            while(!frwdstk.empty()) frwdstk.pop();
+            updateDirEnt(p,first,last,curr);
         }
         else break;
     }
@@ -142,10 +200,9 @@ void scrollDir(vector<directory_entry> &dir, int first,int last,int curr){
 void printDir(path p){
 	p = absolute(p);
 	directory_iterator d_itr(p);
-	vector<directory_entry> dir({directory_entry("."),directory_entry("..")});
+	dir.push_back(directory_entry("."));
+	dir.push_back(directory_entry(".."));
 	for (auto e : d_itr){
-        //skip hidden files
-        if((e.status().permissions() & perms::owner_read) == perms::none)continue;
 		dir.push_back(e);
 	}
     int first=0,last=dir.size();
