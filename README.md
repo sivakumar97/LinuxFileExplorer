@@ -11,9 +11,10 @@ Features:
                i. "." and ".." represent the current and parent directory respectively
         b. Scroll within the directory using arrow keys and press enter to open a file/directory
         c. Traversal(Press the given keys)
-                i. &#8592; To go back to the previously visited directory
                 
-                ii. &#8594; To enter into the next directory
+                i. 🠈  To go back to the previously visited directory
+                
+                ii. 🠊 To enter into the next directory
                 
                 iii. Backspace; One level up
                 
@@ -24,6 +25,6 @@ Features:
         ii. mp3,mp4,jpg,pdfs open but still buggy
         iii. opening any other type of files won't work 
 
-2.COMMAND MODE(*Press : to enter the command mode)
+2.COMMAND MODE(*Press **:** to enter the command mode)
 
 **To enter shell commands**
