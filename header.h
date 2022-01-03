@@ -17,7 +17,7 @@
 using namespace std;
 using namespace std::filesystem;
 
-/*For directory operations*/
+/*For Directory Operations*/
 extern path t;
 extern vector<directory_entry> dir;
 extern stack<path> backstk;
@@ -30,7 +30,7 @@ void print_directory_entry(directory_entry const& ,bool );
 void update_directory_entry(path , int &, int &, int & );
 bool enter_command_mode(path );
 
-/*For opening a file in nano*/
+/*For Opening A File*/
 extern char **environ;
 extern char *temp;
 extern pid_t pid;
@@ -40,10 +40,10 @@ void open_media_pdf(string );
 void open_txt(string );
 
 
-/*For command mode*/
+/*For Command Mode*/
 void printheader(path );
 void split_command(vector <string> &, string , int);
-void execute_command(string );
+bool execute_command(string );
 
 
 

@@ -90,16 +90,17 @@ bool enter_command_mode(path p){
     string cmd = "";
     while(true){
         char c = cin.get();
+        //handle arrow keys;
         if(c == 127 || c == 8){
             if(cmd.empty())continue;
             cout <<"\b \b";
             cmd.pop_back();
         }
-        else if(c == 27) return false;
-        else if(c == 'q') return true;
+        else if(c == 27) return 0;
         else if(c == 10){
             //process command
-            execute_command(cmd);
+            bool after_cmd = execute_command(cmd);
+            if(!after_cmd) return 1;
             cmd = "";
             p = current_path();
             printheader(p);
@@ -109,7 +110,7 @@ bool enter_command_mode(path p){
             cout << c;
         }
     }
-    return false;
+    return 0;
 }
 
 void scroll_directory(vector<directory_entry> &dir, int first,int last,int curr){
@@ -153,7 +154,7 @@ void scroll_directory(vector<directory_entry> &dir, int first,int last,int curr)
             else if (c=='B') {
                 curr=curr+1;
                 if(curr>=last){
-                    if(last<dir.size()){
+                    if((uint32_t)last < dir.size()){
                             last++;
                             first++;
                     }

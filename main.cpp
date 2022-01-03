@@ -1,10 +1,9 @@
 #include "header.h"
 
 int main(){
-
 	path p = current_path();
 	q = absolute(p);
-    printDir(p);
-    cout << "\033c";
+    print_directory(p);
+    cout << CLEAR;
 	return 0;
 }

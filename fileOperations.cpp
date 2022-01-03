@@ -7,7 +7,6 @@ void open_media_pdf(string fname){
     strcpy(temp,fname.c_str());
     char *argv[]  = {n,temp,NULL};
     int status = posix_spawn(&pid,"/bin/xdg-open",NULL,NULL,argv,environ);
-
     if(status == 0) waitpid(pid, &status, 0);
     else cout << strerror(status) << "\n";
 }
