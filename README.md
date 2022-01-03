@@ -7,13 +7,16 @@ A functional terminal based File Explorer with restricted feature set
 **To explore the current directory and navigate the filesystem**
 
 Features:
-        a. Display a list of directories and files(along with it's attributes viz. name,                size, ownership, permissions, last modified) in the current directory
+        a. Display a list of directories and files(along with it's attributes viz. name,size, ownership, permissions, last modified) in the current directory
                i. "." and ".." represent the current and parent directory respectively
-        b. Scroll within the directory using arrow keys and press enter to open a                       file/directory
+        b. Scroll within the directory using arrow keys and press enter to open a file/directory
         c. Traversal(Press the given keys)
                 i. &#8592; To go back to the previously visited directory
+                
                 ii. &#8594; To enter into the next directory
+                
                 iii. Backspace; One level up
+                
                 iv. h; Home Directory(Directory where the application is started)
 
 *Note: While opening a file:
