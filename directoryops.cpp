@@ -42,7 +42,7 @@ string file_size(double size) {
 	return ss.str();
 }
 
-void print_dirent(directory_entry const& d,bool color=false){
+void print_directory_entry(directory_entry const& d,bool color=false){
         ostringstream out;
         string filename=d.path().filename().c_str();
         filename=(filename.size()>24)?(filename.substr(0,21)+".. "):filename;
@@ -70,7 +70,7 @@ void print_dirent(directory_entry const& d,bool color=false){
 		cout << entry;
 }
 
-void updateDirEnt(path p, int& first, int& last, int& curr){
+void update_directory_entry(path p, int& first, int& last, int& curr){
     q = p;
     current_path(q);
     dir.clear();
@@ -84,25 +84,52 @@ void updateDirEnt(path p, int& first, int& last, int& curr){
     curr=1;
 }
 
-void scrollDir(vector<directory_entry> &dir, int first,int last,int curr){
+bool enter_command_mode(path p){
+    cout << CLEAR;
+    printheader(p);
+    string cmd = "";
+    while(true){
+        char c = cin.get();
+        if(c == 127 || c == 8){
+            if(cmd.empty())continue;
+            cout <<"\b \b";
+            cmd.pop_back();
+        }
+        else if(c == 27) return false;
+        else if(c == 'q') return true;
+        else if(c == 10){
+            //process command
+            execute_command(cmd);
+            cmd = "";
+            p = current_path();
+            printheader(p);
+        }
+        else{
+            cmd += c; //append to cmd char-by-char
+            cout << c;
+        }
+    }
+    return false;
+}
+
+void scroll_directory(vector<directory_entry> &dir, int first,int last,int curr){
     path p;
     struct termios initialrsettings, newrsettings;
     tcgetattr(fileno(stdin), &initialrsettings);
-    /*switch to canonical mode and echo mode*/
+    /*switch to canonical mode with no-echo*/
     newrsettings = initialrsettings;
     newrsettings.c_lflag &= ~ICANON;
 	newrsettings.c_lflag &= ~ECHO;
 	tcsetattr(fileno(stdin), TCSAFLUSH, &newrsettings);
-
     while(true){
-        cout << "\033c";
+        cout << CLEAR;
         ostringstream out;
         out << "File Name\t\tFile Size\tPermission\tUserID\t\tGroupID\t\tLast Modified\n" ;
 	    out << string(112,'-');
 	    cout << out.str() << "\n";
         for (int i=first;i<last;i++){
-            if(i==curr)print_dirent(dir[i],true);
-            else print_dirent(dir[i]);
+            if(i==curr)print_directory_entry(dir[i],true);
+            else print_directory_entry(dir[i]);
         }
 
         char key=cin.get();
@@ -144,7 +171,7 @@ void scrollDir(vector<directory_entry> &dir, int first,int last,int curr){
                     backstk.push(q);
                     path p = frwdstk.top();
                     frwdstk.pop();
-                    updateDirEnt(p,first,last,curr);
+                    update_directory_entry(p,first,last,curr);
                 }
             }
             if(c=='D'){
@@ -153,7 +180,7 @@ void scrollDir(vector<directory_entry> &dir, int first,int last,int curr){
                     frwdstk.push(q);
                     p = backstk.top();
                     backstk.pop();
-                    updateDirEnt(p,first,last,curr);
+                    update_directory_entry(p,first,last,curr);
                 }
             }
         }
@@ -164,16 +191,17 @@ void scrollDir(vector<directory_entry> &dir, int first,int last,int curr){
                 p = dir[curr].path();
                 backstk.push(current_path());
                 while(!frwdstk.empty()) frwdstk.pop();
-                updateDirEnt(p,first,last,curr);
+                update_directory_entry(p,first,last,curr);
             }
             else if(dir[curr].is_regular_file()){
                 /*call the nano editor to open the file*/
                 string fname = dir[curr].path().filename().string();
-                bool check_media = ((dir[curr].path().extension() == ".mp4" )||
-                                        (dir[curr].path().extension() == ".mp3" ) ||
-                                            (dir[curr].path().extension() == ".pdf" )||
-                                                (dir[curr].path().extension() == ".jpg" ));
-                if(check_media == true) open_media_pdf(fname);
+                string ext = dir[curr].path().extension();
+                bool check_media = ((ext == ".mp4" )||
+                                        (ext == ".mp3" ) ||
+                                            (ext == ".pdf" )||
+                                                (ext == ".jpg" ));
+                if(check_media) open_media_pdf(fname);
                 else open_txt(fname);
             }
         }
@@ -183,21 +211,30 @@ void scrollDir(vector<directory_entry> &dir, int first,int last,int curr){
             backstk.push(q);
             p = q.parent_path();
             while(!frwdstk.empty()) frwdstk.pop();
-            updateDirEnt(p,first,last,curr);
+            update_directory_entry(p,first,last,curr);
         }
         else if(key==104){
             /*h - home*/
             backstk.push(q);
             p = absolute("/home");
             while(!frwdstk.empty()) frwdstk.pop();
-            updateDirEnt(p,first,last,curr);
+            update_directory_entry(p,first,last,curr);
         }
+        /*enter command mode on ':' press*/
+        else if(key==58){
+            /*within command mode */
+            bool check = enter_command_mode(current_path());
+            p = current_path();
+            if(check) break;
+            update_directory_entry(p,first,last,curr);
+        }
+        else if(key == 'q') break;
         else break;
     }
     tcsetattr(fileno(stdin), TCSANOW, &initialrsettings);
 }
 
-void printDir(path p){
+void print_directory(path p){
 	p = absolute(p);
 	directory_iterator d_itr(p);
 	dir.push_back(directory_entry("."));
@@ -208,5 +245,5 @@ void printDir(path p){
     int first=0,last=dir.size();
     if(last>25)last=25;
     int curr=1;
-    scrollDir(dir,first,last,curr);
+    scroll_directory(dir,first,last,curr);
 }
