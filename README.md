@@ -18,13 +18,13 @@ Features:
                 
                 iii. Backspace; One level up
                 
-                iv. h; Home Directory(Directory where the application is started)
+                iv. h Home Directory(Directory where the application is started)
 
 *Note: While opening a file:
         i. text files open in nano
         ii. mp3,mp4,jpg,pdfs open but still buggy
-        iii. opening any other type of files won't work 
+        iii. opening any other type of files won't work*
 
-2.COMMAND MODE(*Press **:** to enter the command mode)
+2.COMMAND MODE(*Press **:** to enter the command mode*)
 
 **To enter shell commands**
