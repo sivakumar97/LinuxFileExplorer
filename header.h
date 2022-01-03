@@ -1,7 +1,10 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-#include <bits/stdc++.h>
+#include <vector>
+#include <stack>
+#include <string>
+#include <iostream>
 #include <filesystem>
 #include <sys/stat.h>
 #include <pwd.h>

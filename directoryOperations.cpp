@@ -135,8 +135,9 @@ void scroll_directory(vector<directory_entry> &dir, int first,int last,int curr)
 
         char key=cin.get();
         if (key==27){
-            cin.get();
+            if(cin.get() == 'q') break;
             char c=cin.get();
+
             if (c=='A') {
                 curr=curr-1;
                 if(curr<first){
@@ -166,7 +167,7 @@ void scroll_directory(vector<directory_entry> &dir, int first,int last,int curr)
                     }
                 }
             }
-            if(c=='C'){
+            else if(c=='C'){
                 /*right arrow*/
                 if(!frwdstk.empty()){
                     backstk.push(q);
@@ -175,7 +176,7 @@ void scroll_directory(vector<directory_entry> &dir, int first,int last,int curr)
                     update_directory_entry(p,first,last,curr);
                 }
             }
-            if(c=='D'){
+            else if(c=='D'){
                 /*left arrow*/
                 if(!backstk.empty()){
                     frwdstk.push(q);
@@ -208,7 +209,6 @@ void scroll_directory(vector<directory_entry> &dir, int first,int last,int curr)
         }
         else if(key==127){
             /*backspace*/
-            /*https://stackoverflow.com/questions/4363309/how-to-check-for-the-backspace-character-in-c*/
             backstk.push(q);
             p = q.parent_path();
             while(!frwdstk.empty()) frwdstk.pop();
