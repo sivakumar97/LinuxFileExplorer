@@ -11,7 +11,6 @@ void open_media_pdf(string fname){
     else cout << strerror(status) << "\n";
 }
 
-
 void open_txt(string fname){
     pid_t pid;
     char *n = (char*)"nano";
@@ -23,4 +22,3 @@ void open_txt(string fname){
     if(status == 0) waitpid(pid, &status, 0);
     else cout << strerror(status) << "\n";
 }
-
