@@ -29,19 +29,27 @@ Features:
 
 **To enter shell commands**
 
-Copy File/Direrectory- ‘copy <source_file(s)> <destination_directory>’
-Eg - copy foo.txt bar.txt baz.mp4 ./foobar Move - ‘move <source_file> <destination_directory>’ move foo.txt ./foobar Rename - ‘rename <old_filename> <new_filename>’ rename foo.txt bar.txt
+a. Copy File/Direrectory- ‘copy <source_file(s)> <destination_directory>’
 
-Create File - ‘create_file <file_name> <destination_path>’ Create Directory - ‘create_dir <dir_name> <destination_path>’
-Eg -create_file foo.txt ./foobar create_file foo.txt . create_dir foo ./foobar
+        Eg - copy foo.txt bar.txt baz.mp4 ./foobar 
 
-Delete File - ‘delete_file <file_path>’ Delete Directory(recursive) - ‘delete_dir <dir_path>’
-Goto -
-goto <directory_path>
+b. Move - ‘move <source_file> <destination_directory>’ 
 
-Search - ‘search <file_name>’ or ‘search <directory_name>’
-Searchs for a given file or folder under the current directory recursively.
-Prints True or False depending on whether the file or folder exists.
-Enter switch command, the application will go back to Normal Mode
-On pressing q key, the application will close.
-Enter clear to clear the command mode screen.
+        Eg - move foo.txt ./foobar Rename - ‘rename <old_filename> <new_filename>’ rename foo.txt bar.txt
+
+c. Create File - ‘create_file <file_name> <destination_path>’ Create Directory - ‘create_dir <dir_name> <destination_path>’
+
+        Eg -create_file foo.txt ./foobar create_file foo.txt . create_dir foo ./foobar
+
+d. Delete File - ‘delete_file <file_path>’ Delete Directory(recursive) - ‘delete_dir <dir_path>’
+
+e. Goto - goto <directory_path>
+
+f. Search - ‘search <file_name>’ or ‘search <directory_name>’
+        Searchs for a given file or folder under the current directory recursively.
+
+g. clear to clear the command mode screen.
+
+h. Press ESC key to go back to the Normal Mode
+
+i. exit - the application will close.
