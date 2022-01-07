@@ -28,9 +28,9 @@ Features:
         
         i. text files open in nano
         
-        ii. mp3,mp4,jpg,pdfs open but still buggy
+        ii. mp3,mp4,jpg,pdfs open in default apps as in the system
         
-        iii. opening any other type of files won't work
+        iii. opening any other type of files aren't tested
 
 2. COMMAND MODE(*Press **:** to enter the command mode*)
 
@@ -60,3 +60,5 @@ g. clear to clear the command mode screen.
 h. Press ESC key to go back to the Normal Mode
 
 i. exit - the application will close.
+
+*NOTE: Arrow keys won't work in command mode*
